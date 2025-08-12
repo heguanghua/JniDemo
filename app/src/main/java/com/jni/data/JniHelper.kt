@@ -20,7 +20,7 @@ class JniHelper {
         external fun sharedLibString(): String
 
         @JvmStatic
-        external fun changePersonName(person: Person)
+        external fun setPerson(person: Person)
 
         @JvmStatic
         external fun getPerson(): Person

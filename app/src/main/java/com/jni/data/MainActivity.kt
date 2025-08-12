@@ -2,6 +2,7 @@ package com.jni.data
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import com.jni.data.databinding.ActivityMainBinding
 import com.jni.data.model.Person
 import com.jni.data.model.Student
@@ -19,36 +20,60 @@ class MainActivity : AppCompatActivity() {
         // Example of a call to a native method
         binding.sampleText.text = JniHelper.sharedLibString()
         binding.setPerson.setOnClickListener {
-            val person = Person("Doe", 20)
-            JniHelper.changePersonName(person)
+            if (binding.inputPersonName.text.isEmpty()) {
+                Toast.makeText(this, "name is empty", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (binding.inputPersonAge.text.isEmpty() ) {
+                Toast.makeText(this, "age is empty", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            val person = Person(binding.inputPersonName.text.toString(), binding.inputPersonAge.text.toString().toInt())
+            JniHelper.setPerson(person)
             binding.sampleText.text = buildString {
+                append("P name: ")
                 append(person.name)
-                append("_")
+                append(" | ")
+                append("age: ")
                 append(person.age)
             }
         }
         binding.getPerson.setOnClickListener {
             val person = JniHelper.getPerson()
             binding.sampleText.text = buildString {
+                append("P name: ")
                 append(person.name)
-                append("_")
+                append(" | ")
+                append("age: ")
                 append(person.age)
             }
         }
         binding.setStudent.setOnClickListener {
-            val student = Student("s_zhang3", 22)
+            if (binding.inputStudentName.text.isEmpty()) {
+                Toast.makeText(this, "name is empty", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (binding.inputStudentAge.text.isEmpty() ) {
+                Toast.makeText(this, "age is empty", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            val student = Student(binding.inputStudentName.text.toString(), binding.inputStudentAge.text.toString().toInt())
             JniHelper.changeStudentName(student)
             binding.sampleText.text = buildString {
+                append("S name: ")
                 append(student.name)
-                append("_")
+                append(" | ")
+                append("age: ")
                 append(student.age)
             }
         }
         binding.getStudent.setOnClickListener {
             val student = JniHelper.getStudent()
             binding.sampleText.text = buildString {
+                append("S name: ")
                 append(student.name)
-                append("_")
+                append(" | ")
+                append("age: ")
                 append(student.age)
             }
         }

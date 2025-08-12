@@ -6,43 +6,60 @@ jstring sharedLibString(JNIEnv* env, jclass /* this */) {
     return env->NewStringUTF(hello.c_str());
 }
 
-void changePersonName(JNIEnv *env, jclass clazz, jobject person) {
-    //获取person的class对象
-    jclass student = env->GetObjectClass(person);
-    //获取setName方法的id
-    jmethodID setNameMethond = env->GetMethodID(student, "setName", "(Ljava/lang/String;)V");
-    char *c_new_name = "p_xiaoming";
-    jstring str = env->NewStringUTF(c_new_name);
-    //调用方法，因为返回值是void，所以是CallVoidMethod，再把改变后的str传进去
-    env->CallVoidMethod(person, setNameMethond, str);
+void setPerson(JNIEnv *env, jclass clazz, jobject person) {
+    // 获取 person 的 class 对象
+    jclass pJclass = env->GetObjectClass(person);
+
+    // --- Name 相关处理 ---
+    jmethodID getNameMethod = env->GetMethodID(pJclass, "getName", "()Ljava/lang/String;");
+    auto originalName = (jstring)env->CallObjectMethod(person, getNameMethod);
+    const char *c_name = env->GetStringUTFChars(originalName, nullptr);
+    jstring str = env->NewStringUTF(c_name);
+    jmethodID setNameMethod = env->GetMethodID(pJclass, "setName", "(Ljava/lang/String;)V");
+    env->CallVoidMethod(person, setNameMethod, str);
+    env->ReleaseStringUTFChars(originalName, c_name);
+
+    // --- Age 相关处理 ---
+    jmethodID getAgeMethod = env->GetMethodID(pJclass, "getAge", "()I");
+    jint age = env->CallIntMethod(person, getAgeMethod);
+    jmethodID setAgeMethod = env->GetMethodID(pJclass, "setAge", "(I)V");
+    env->CallVoidMethod(person, setAgeMethod, age);
 }
 
 //返回java层对象
-jobject returnPerson(JNIEnv *env, jclass clazz) {
-    //获取到person class对象
-    jclass jclass1 = env->FindClass("com/jni/data/model/Person");
+jobject getPerson(JNIEnv *env, jclass clazz) {
+    //获取 person 的 class对象
+    jclass pJclass = env->FindClass("com/jni/data/model/Person");
     //获取到构造函数的methodId
-    jmethodID jmethodID1 = env->GetMethodID(jclass1, "<init>", "(Ljava/lang/String;I)V");
-    char *back_name = "p_wangmeimei";
-    jint age = 233;
+    jmethodID jmethodID1 = env->GetMethodID(pJclass, "<init>", "(Ljava/lang/String;I)V");
+    char *back_name = "wangmeimei";
+    jint age = 23;
     jstring str = env->NewStringUTF(back_name);
     //NewObject，根据class对象返回一个实例对象
-    jobject perosn = env->NewObject(jclass1, jmethodID1, str, age);
+    jobject perosn = env->NewObject(pJclass, jmethodID1, str, age);
     return perosn;
 }
 
-void changeStudentName(JNIEnv *env, jclass clazz, jobject person) {
+void setStudent(JNIEnv *env, jclass clazz, jobject student) {
     //获取person的class对象
-    jclass student = env->GetObjectClass(person);
-    //获取setName方法的id
-    jmethodID setNameMethond = env->GetMethodID(student, "setName", "(Ljava/lang/String;)V");
-    char *c_new_name = "s_wang5";
-    jstring str = env->NewStringUTF(c_new_name);
-    //调用方法，因为返回值是void，所以是CallVoidMethod，再把改变后的str传进去
-    env->CallVoidMethod(person, setNameMethond, str);
+    jclass sJclass = env->GetObjectClass(student);
+    // --- Name 相关处理 ---
+    jmethodID getNameMethod = env->GetMethodID(sJclass, "getName", "()Ljava/lang/String;");
+    auto originalName = (jstring)env->CallObjectMethod(student, getNameMethod);
+    const char *c_name = env->GetStringUTFChars(originalName, nullptr);
+    jstring name = env->NewStringUTF(c_name);
+    jmethodID setNameMethod = env->GetMethodID(sJclass, "setName", "(Ljava/lang/String;)V");
+    env->CallVoidMethod(student, setNameMethod, name);
+    env->ReleaseStringUTFChars(originalName, c_name);
+
+    // --- Age 相关处理 ---
+    jmethodID getAgeMethod = env->GetMethodID(sJclass, "getAge", "()I");
+    jint age = env->CallIntMethod(student, getAgeMethod);
+    jmethodID setAgeMethod = env->GetMethodID(sJclass, "setAge", "(I)V");
+    env->CallVoidMethod(student, setAgeMethod, age);
 }
 
-jobject returnStudent(JNIEnv *env, jclass clazz) {
+jobject getStudent(JNIEnv *env, jclass clazz) {
     jclass jclass1 = env->FindClass("com/jni/data/model/Student");
     // 数据类主构造函数签名需要与Kotlin定义完全一致
     // 假设Student定义为: data class Student(val age: Int, val name: String)
@@ -52,7 +69,7 @@ jobject returnStudent(JNIEnv *env, jclass clazz) {
      jmethodID jmethodID1 = env->GetMethodID(jclass1, "<init>", "(Ljava/lang/String;I)V");
 
     jint age = 26;
-    jstring str = env->NewStringUTF("s_ma6");
+    jstring str = env->NewStringUTF("xiaoming");
     jobject student = env->NewObject(jclass1, jmethodID1, str, age);
     return student;
 }
@@ -61,10 +78,10 @@ jint registerMethod(JNIEnv* env) {
     jclass clz = env->FindClass("com/jni/data/JniHelper");
     JNINativeMethod jniNativeMethod[] = {
             {"sharedLibString", "()Ljava/lang/String;", (void*) sharedLibString},
-                { "changePersonName", "(Lcom/jni/data/model/Person;)V", (void *) changePersonName} ,
-            {"getPerson", "()Lcom/jni/data/model/Person;", (void*) returnPerson},
-            {"changeStudentName", "(Lcom/jni/data/model/Student;)V", (void *) changeStudentName},
-            {"getStudent", "()Lcom/jni/data/model/Student;", (void*) returnStudent},
+                { "setPerson", "(Lcom/jni/data/model/Person;)V", (void *) setPerson} ,
+            {"getPerson", "()Lcom/jni/data/model/Person;", (void *) getPerson},
+            {"changeStudentName", "(Lcom/jni/data/model/Student;)V", (void *) setStudent},
+            {"getStudent", "()Lcom/jni/data/model/Student;", (void *) getStudent},
     };
 
     return env->RegisterNatives(clz, jniNativeMethod, sizeof(jniNativeMethod) / sizeof(jniNativeMethod[0]));
