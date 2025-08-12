@@ -6,7 +6,7 @@ jstring sharedLibString(JNIEnv* env, jclass /* this */) {
     return env->NewStringUTF(hello.c_str());
 }
 
-void setPerson(JNIEnv *env, jclass clazz, jobject person) {
+void updatePerson(JNIEnv *env, jclass clazz, jobject person) {
     // 获取 person 的 class 对象
     jclass pJclass = env->GetObjectClass(person);
 
@@ -40,7 +40,7 @@ jobject getPerson(JNIEnv *env, jclass clazz) {
     return perosn;
 }
 
-void setStudent(JNIEnv *env, jclass clazz, jobject student) {
+void updateStudent(JNIEnv *env, jclass clazz, jobject student) {
     //获取person的class对象
     jclass sJclass = env->GetObjectClass(student);
     // --- Name 相关处理 ---
@@ -78,9 +78,9 @@ jint registerMethod(JNIEnv* env) {
     jclass clz = env->FindClass("com/jni/data/JniHelper");
     JNINativeMethod jniNativeMethod[] = {
             {"sharedLibString", "()Ljava/lang/String;", (void*) sharedLibString},
-                { "setPerson", "(Lcom/jni/data/model/Person;)V", (void *) setPerson} ,
+                { "updatePerson", "(Lcom/jni/data/model/Person;)V", (void *) updatePerson} ,
             {"getPerson", "()Lcom/jni/data/model/Person;", (void *) getPerson},
-            {"changeStudentName", "(Lcom/jni/data/model/Student;)V", (void *) setStudent},
+            {"updateStudent", "(Lcom/jni/data/model/Student;)V", (void *) updateStudent},
             {"getStudent", "()Lcom/jni/data/model/Student;", (void *) getStudent},
     };
 

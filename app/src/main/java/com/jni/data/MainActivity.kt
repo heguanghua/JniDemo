@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
             val person = Person(binding.inputPersonName.text.toString(), binding.inputPersonAge.text.toString().toInt())
-            JniHelper.setPerson(person)
+            JniHelper.updatePerson(person)
             binding.sampleText.text = buildString {
                 append("P name: ")
                 append(person.name)
@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
             val student = Student(binding.inputStudentName.text.toString(), binding.inputStudentAge.text.toString().toInt())
-            JniHelper.changeStudentName(student)
+            JniHelper.updateStudent(student)
             binding.sampleText.text = buildString {
                 append("S name: ")
                 append(student.name)
