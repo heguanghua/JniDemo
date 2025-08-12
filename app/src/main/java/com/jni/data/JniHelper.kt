@@ -1,5 +1,8 @@
 package com.jni.data
 
+import com.jni.data.model.Person
+import com.jni.data.model.Student
+
 class JniHelper {
     companion object {
         // Used to load the 'data' library on application startup.

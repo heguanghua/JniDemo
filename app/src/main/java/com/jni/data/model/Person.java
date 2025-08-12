@@ -1,4 +1,4 @@
-package com.jni.data;
+package com.jni.data.model;
 
 public class Person {
     public String name;

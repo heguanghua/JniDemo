@@ -20,7 +20,7 @@ void changePersonName(JNIEnv *env, jclass clazz, jobject person) {
 //返回java层对象
 jobject returnPerson(JNIEnv *env, jclass clazz) {
     //获取到person class对象
-    jclass jclass1 = env->FindClass("com/jni/data/Person");
+    jclass jclass1 = env->FindClass("com/jni/data/model/Person");
     //获取到构造函数的methodId
     jmethodID jmethodID1 = env->GetMethodID(jclass1, "<init>", "(Ljava/lang/String;I)V");
     char *back_name = "p_wangmeimei";
@@ -43,10 +43,10 @@ void changeStudentName(JNIEnv *env, jclass clazz, jobject person) {
 }
 
 jobject returnStudent(JNIEnv *env, jclass clazz) {
-    jclass jclass1 = env->FindClass("com/jni/data/Student");
+    jclass jclass1 = env->FindClass("com/jni/data/model/Student");
     // 数据类主构造函数签名需要与Kotlin定义完全一致
     // 假设Student定义为: data class Student(val age: Int, val name: String)
-//    jmethodID jmethodID1 = env->GetMethodID(jclass1, "<init>", "(ILjava/lang/String;)V");
+    // jmethodID jmethodID1 = env->GetMethodID(jclass1, "<init>", "(ILjava/lang/String;)V");
 
     // 如果参数顺序不同(如name在前)，需要调整签名和传参顺序:
      jmethodID jmethodID1 = env->GetMethodID(jclass1, "<init>", "(Ljava/lang/String;I)V");
@@ -61,10 +61,10 @@ jint registerMethod(JNIEnv* env) {
     jclass clz = env->FindClass("com/jni/data/JniHelper");
     JNINativeMethod jniNativeMethod[] = {
             {"sharedLibString", "()Ljava/lang/String;", (void*) sharedLibString},
-                { "changePersonName", "(Lcom/jni/data/Person;)V", (void *) changePersonName} ,
-            {"getPerson", "()Lcom/jni/data/Person;", (void*) returnPerson},
-            {"changeStudentName", "(Lcom/jni/data/Student;)V", (void *) changeStudentName},
-            {"getStudent", "()Lcom/jni/data/Student;", (void*) returnStudent},
+                { "changePersonName", "(Lcom/jni/data/model/Person;)V", (void *) changePersonName} ,
+            {"getPerson", "()Lcom/jni/data/model/Person;", (void*) returnPerson},
+            {"changeStudentName", "(Lcom/jni/data/model/Student;)V", (void *) changeStudentName},
+            {"getStudent", "()Lcom/jni/data/model/Student;", (void*) returnStudent},
     };
 
     return env->RegisterNatives(clz, jniNativeMethod, sizeof(jniNativeMethod) / sizeof(jniNativeMethod[0]));

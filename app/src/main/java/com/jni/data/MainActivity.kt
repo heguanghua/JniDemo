@@ -2,8 +2,9 @@ package com.jni.data
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.TextView
 import com.jni.data.databinding.ActivityMainBinding
+import com.jni.data.model.Person
+import com.jni.data.model.Student
 
 class MainActivity : AppCompatActivity() {
 
